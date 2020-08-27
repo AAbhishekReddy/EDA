@@ -1,16 +1,18 @@
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
+import os
+
 class titanic():
 
     def __init__(self):
-        self.dat = pd.read_csv(r"E:\CES\git\EDA\input\titanic-train.csv")
+        self.file_path = os.path.dirname(os.path.realpath(__file__))
+        self.file_path = os.path.join(self.file_path, "titanic-train.csv")
+        self.dat = pd.read_csv(self.file_path)
         self.dat_copy = self.dat
         self.decision_tree = None
         self.svc = None

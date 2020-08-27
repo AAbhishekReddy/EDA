@@ -41,3 +41,13 @@ titanic_train.loc[titanic_train["Age"] > 66, "Age"] = 66.0
 titanic_train.loc[titanic_train["Fare"] > 70, "Fare"] = 70.0
 
 sn.pairplot(titanic_train[["Survived", "Pclass", "Age", "Fare"]], hue = "Survived", size = 3)
+
+
+# FROM python:3.8-slim
+# EXPOSE 8501
+# WORKDIR /app
+# COPY requirements.txt ./requirements.txt
+# RUN pip install -r requirements.txt
+# COPY . .
+# RUN chmod 755 classifier_app.py
+# CMD streamlit run classifier_app.py

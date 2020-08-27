@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as  np
 import joblib
+import os
 
 from req.titanic_model import titanic
 
@@ -19,10 +20,13 @@ slot6 = st.sidebar.empty()
 slot7 = st.sidebar.empty()
 slot8 = st.sidebar.empty()
 
+predict_button = st.sidebar.button("Predict")
+
 # creating slots in The main window
 
 
 # Funtion for titanic input
+# @st.cache(suppress_st_warning = True)
 def titanic_input():
     name = slot1.text_input("Name", value="Enter Name With TITLE: Mr.")
     age = slot2.number_input("Age", min_value=0, max_value=100, step=None, value=30)
@@ -60,6 +64,7 @@ def titanic_input():
     data = model.data_preprocessing(dat_altered)
     # "### DATA", data
 
+    
     model_select = st.radio("Select Prediction Model", options = ["Decision Tree", "Support Vector Machine"])
 
     # Build the model
@@ -67,11 +72,17 @@ def titanic_input():
     model.build_svc()
     dtree, svc = model.predict_survival(data)
 
+
     if model_select == "Decision Tree":
-        "### DECISION TREE PREDICTION", dtree
+        if predict_button:
+            message = f"#### {name} unfortunately will not Survive" if dtree[0] == 0 else f"{name} will Survive"
+            st.write("### DECISION TREE PREDICTION")
+            st.write(message)
     elif model_select == "Support Vector Machine":
-        "### SUPPORT VECTOR MACHINE PREDICTION", svc
-    st.write("0 -> Dead : 1 -> Alive")
+        if predict_button:
+            message = f"#### {name} unfortunately will not Survive" if svc[0] == 0 else f"{name} will Survive"
+            st.write("### SUPPORT VECTOR MACHINE PREDICTION")
+            st.write(message)
 
 
 def cars_input():
@@ -127,21 +138,24 @@ def cars_input():
 
     arr = np.array([buying, maint, doors, persons, lug_boot, safety])
 
-    dtree_cars = joblib.load("E:\CES\git\EDA\outputs\dtree_cars.sav")
-    st.write("""
-    ## Decision Tree Prediction
-    """)
-    st.write (dtree_cars.predict(arr.reshape(1,-1)))
+    file_path = os.path.dirname(os.path.realpath(__file__))
+    file_path = os.path.join(file_path, "dtree_cars.sav")
 
-    st.write("""
-    unacc   --> Un - Acceptable,
-    acc     --> Acceptable,
-    good    --> Good,
-    v-good  --> Very Good.
-    """)
+    dtree_cars = joblib.load(file_path)
 
+    if predict_button:
+        st.write("""
+        ## Decision Tree Prediction
+        """)
+        prediction_cars = dtree_cars.predict(arr.reshape(1,-1))
+        message = "### The Car is "
+        message = message + "***Un Acceptable***" if prediction_cars == "unacc" else message
+        message = message + "***Un Acceptable***" if prediction_cars == "acc" else message
+        message = message + "***Un Acceptable***" if prediction_cars == "good" else message
+        message = message + "***Un Acceptable***" if prediction_cars == "v-good" else message
 
-
+        st.write(message)
+        
 
 
 data_select = st.radio("Select the Classifier", options = ["Titanic Survival Classifier", "Cars safety Clsssifier"])
