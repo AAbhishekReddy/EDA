@@ -6,6 +6,8 @@ import os
 
 from req.titanic_model import titanic
 
+
+st.write("This is a test")
 st.write("""
 # This is a classifier app for titanic and cars
 """)
@@ -157,11 +159,24 @@ def cars_input():
         st.write(message)
         
 
+st.write("""
+Classification Models.
+""")
 
 data_select = st.radio("Select the Classifier", options = ["Titanic Survival Classifier", "Cars safety Clsssifier"])
+
+st.write("""
+Regression Models.
+""")
+
+reg_select = st.radio("Select the Regression Model", options = ["Beer Review"])
+
 
 if data_select == "Titanic Survival Classifier":
     titanic_input()
 elif data_select == "Cars safety Clsssifier":
     cars_input()
+    support.trail()
+
+
 
